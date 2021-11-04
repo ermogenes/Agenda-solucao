@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Agenda.db;
 
 namespace Agenda
 {
@@ -70,7 +72,23 @@ namespace Agenda
         {
             Console.WriteLine("- Listar todos os contatos:");
 
-            // Continue daqui
+            using (var agenda = new agendaContext())
+            {
+                int qtdDeContatos = agenda.Contatos.Count();
+
+                if (qtdDeContatos == 0)
+                {
+                    Console.WriteLine("Nenhum contato cadastrado.");
+                    return;
+                }
+
+                Console.WriteLine($"{qtdDeContatos} contato(s) cadastrado(s):");
+
+                foreach (var contato in agenda.Contatos)
+                {
+                    Console.WriteLine($"{contato.Id}: {contato.Nome}, {contato.Fone}, {contato.Estrelas} estrelas.");
+                }
+            }
         }
 
         static void Top5Contatos()

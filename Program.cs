@@ -95,7 +95,29 @@ namespace Agenda
         {
             Console.WriteLine("- Top 5 contatos:");
 
-            // Continue daqui
+            using (var agenda = new agendaContext())
+            {
+                int qtdDeContatos = agenda.Contatos.Count();
+
+                if (qtdDeContatos == 0)
+                {
+                    Console.WriteLine("Nenhum contato cadastrado.");
+                    return;
+                }
+
+                Console.WriteLine($"{qtdDeContatos} contato(s) cadastrado(s):");
+
+                var top5Contatos = agenda.Contatos
+                    .OrderByDescending(c => c.Estrelas)
+                    .Take(5);
+                
+                int posicao = 0;
+                foreach (var contato in top5Contatos)
+                {
+                    posicao += 1;
+                    Console.WriteLine($"#{posicao} = {contato.Id}: {contato.Nome}, {contato.Fone}, {contato.Estrelas} estrelas.");
+                }
+            }
         }
 
         static void ConsultarContatosPorCodigo()

@@ -110,7 +110,7 @@ namespace Agenda
                 var top5Contatos = agenda.Contatos
                     .OrderByDescending(c => c.Estrelas)
                     .Take(5);
-                
+
                 int posicao = 0;
                 foreach (var contato in top5Contatos)
                 {
@@ -124,7 +124,32 @@ namespace Agenda
         {
             Console.WriteLine("- Consultar contatos por Código:");
 
-            // Continue daqui
+            Console.Write("Código: ");
+            string codigoDigitado = Console.ReadLine();
+
+            int codigoABuscar;
+            bool ehNumero = Int32.TryParse(codigoDigitado, out codigoABuscar);
+
+            if (!ehNumero)
+            {
+                Console.WriteLine("Código numérico inválido.");
+                return;
+            }
+
+            using (var agenda = new agendaContext())
+            {
+                var contato = agenda.Contatos
+                    .SingleOrDefault(c => c.Id == codigoABuscar);
+
+                if (contato is null)
+                {
+                    Console.WriteLine($"Nenhum contato com código {codigoABuscar} encontrado.");
+                }
+                else
+                {
+                    Console.WriteLine($"{contato.Id}: {contato.Nome}, {contato.Fone}, {contato.Estrelas} estrelas.");
+                }
+            }
         }
 
         static void ConsultarContatosPorNome()

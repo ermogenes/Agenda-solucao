@@ -185,7 +185,56 @@ namespace Agenda
         {
             Console.WriteLine("- Incluir contato:");
 
-            // Continue daqui
+            Console.Write("Nome......: ");
+            string nomeDesejado = Console.ReadLine().Trim();
+
+            if (nomeDesejado == String.Empty)
+            {
+                Console.WriteLine("Nome requerido.");
+                return;
+            }
+
+            using (var agenda = new agendaContext())
+            {
+                var contatoComNomeDesejado = agenda.Contatos
+                    .SingleOrDefault(c => c.Nome == nomeDesejado);
+
+                if (contatoComNomeDesejado is not null)
+                {
+                    Console.WriteLine($"Contato existente com o nome indicado: {contatoComNomeDesejado.Id}.");
+                    return;
+                }
+            }
+
+            Console.Write("Fone......: ");
+            string fone = Console.ReadLine().Trim();
+
+            Console.Write("Estrelas..: ");
+            string estrelasDigitado = Console.ReadLine().Trim();
+
+            int estrelas = 0;
+            Int32.TryParse(estrelasDigitado, out estrelas);
+
+            if (estrelas < 0 || estrelas > 5)
+            {
+                Console.WriteLine("Estrelas deve ser um número entre 0 e 5.");
+                return;
+            }
+
+            var novoContato = new Contato
+            {
+                Nome = nomeDesejado,
+                Fone = fone,
+                Estrelas = estrelas,
+            };
+
+            using (var agenda = new agendaContext())
+            {
+                agenda.Contatos.Add(novoContato);
+                agenda.SaveChanges();
+
+                Console.WriteLine($"{novoContato.Id}: {novoContato.Nome}, {novoContato.Fone}, {novoContato.Estrelas} estrelas.");
+            }
         }
     }
 }
